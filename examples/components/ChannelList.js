@@ -1,0 +1,177 @@
+import React, {Component} from 'react';
+import {StyleSheet, FlatList, Text, View, TouchableOpacity, ActivityIndicator } from 'react-native';
+
+import { api } from 'boxcast-sdk-js';
+
+import BroadcastPreview from './BroadcastPreview';
+
+const PAGE_SIZE = 20;
+
+export default class Channel extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      broadcasts: [],
+      error: null,
+      page: 1,
+      loading: true,
+      refreshing: false,
+      loadingMore: false,
+      width: 0,
+      height: 0,
+    };
+  }
+
+  componentDidMount() {
+    this._fetch();
+  }
+
+  render() {
+    const { loading, broadcasts, error, refreshing } = this.state;
+    return (
+      <View style={styles.container}
+            onLayout={(event) => {
+              var {width, height} = event.nativeEvent.layout;
+              this.setState({width, height})
+            }}>
+        {error ? <Text style={styles.error}>{error}</Text> : null}
+        <FlatList style={{width: '100%'}}
+                  contentContainerStyle={{
+                  }}
+                  data={broadcasts}
+                  horizontal={this.props.horizontal}
+                  renderItem={({item}) => this.renderBroadcast(item)}
+                  keyExtractor={(item, index) => item.id}
+                  onEndReached={() => this._handleLoadMore()}
+                  onEndReachedThreshold={0.5}
+                  initialNumToRender={PAGE_SIZE}
+                  ListFooterComponent={() => this._renderFooter()}
+                  refreshing={refreshing}
+                  onRefresh={() => this._handleRefresh()}
+            />
+      </View>
+    );
+  }
+
+  renderBroadcast(broadcast) {
+    var style, broadcastStyle;
+    if (this.props.horizontal) {
+      style = {marginRight: 15, height: this.state.height, width: this.state.height * 16/9};
+      broadcastStyle = {height: this.state.height, width: this.state.height * 16/9};
+    } else {
+      style = {marginBottom: 15, width: '100%', height: this.state.width * 9/16};
+      broadcastStyle = {width: '100%', height: this.state.height * 9/16};
+    }
+    return ( 
+      <View style={style}>
+        <BroadcastPreview broadcast={broadcast}
+                          style={broadcastStyle}
+                          onPress={() => this.props.onSelectBroadcast(broadcast)} />
+      </View>
+    );
+  }
+
+  _renderFooter() {
+    if (!this.state.loadingMore) return null;
+
+    return (
+      <View
+        style={{
+          position: 'relative',
+          width: '100%',
+          height: 50,
+          paddingVertical: 20,
+          borderTopWidth: 1,
+          marginTop: 10,
+          marginBottom: 10,
+          borderColor: '#f2f2f2'
+        }}
+      >
+        <ActivityIndicator animating size="large" />
+      </View>
+    );
+  }
+
+  _handleRefresh() {
+    this.setState(
+      {broadcasts: [], page: 1, refreshing: true},
+      () => this._fetch()
+    );
+  }
+
+  _fetch() {
+    const { channelId } = this.props;
+    const args = {
+      q: 'timeframe:relevant',
+      s: '-starts_at',
+      l: PAGE_SIZE,
+      p: this.state.page
+    };
+    api.broadcasts.list(channelId, args).then((r) => {
+      this.setState({
+        broadcasts: [].concat(this.state.broadcasts).concat(r.data),
+        error: null,
+        loading: false,
+        refreshing: false,
+        loadingMore: false
+      });
+    }).catch((err) => {
+      var error = err.response.data;
+      if (error.error_description) {
+        error = `${error.error_description}`;
+      } else {
+        error = `Error: ${JSON.stringify(error)}`;
+      }
+      this.setState({
+        error: error,
+        loading: false,
+        refreshing: false,
+        loadingMore: false
+      });
+    });
+  }
+
+  _handleLoadMore() {
+    this.setState(
+      (prevState, nextProps) => ({
+        page: prevState.page + 1,
+        loadingMore: true
+      }),
+      () => this._fetch()
+    );
+  }
+};
+
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+  },
+  title: {
+    fontSize: 20,
+    textAlign: 'center',
+    margin: 10,
+    backgroundColor: '#000000',
+    color: '#ffffff',
+  },
+  error: {
+    fontSize: 20,
+    backgroundColor: 'orange',
+    color: 'white',
+    fontWeight: 'bold',
+    width: '100%',
+    textAlign: 'center',
+    margin: 10,
+  },
+  fullScreen: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+  },
+});
+
