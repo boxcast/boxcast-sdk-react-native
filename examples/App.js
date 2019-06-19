@@ -48,9 +48,7 @@ export default class App extends Component<Props> {
 
         <Modal animationType="slide" transparent={false} visible={this.state.broadcast !== null}>
           <View style={{marginTop: 0, borderWidth: 1, borderColor: '#ff0000', flex: 1}}>
-            <Broadcast broadcast={this.state.broadcast}
-                       onDismiss={() => this.setState({broadcast: null})}
-            />
+            {this.state.broadcast && <Broadcast broadcast={this.state.broadcast} onDismiss={() => this.setState({broadcast: null})} />}
           </View>
         </Modal>
       </View>

@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {
   ActivityIndicator,
   AsyncStorage,
+  Button,
   Image,
   Platform,
   StyleSheet,
@@ -98,33 +99,45 @@ export default class Broadcast extends Component<Props> {
 
     return (
       <View style={styles.fullScreen}>
-        {view.playlist ?
-          <Video source={{uri: view.playlist}}
-                ref={this.playerRef}
-                style={styles.fullScreen}
-                fullscreen={true}
-                fullscreenAutorotate={false}
-                fullscreenOrientation={'landscape'}
-                controls={true}
-                poster={this.broadcast.poster || this.broadcast.preview}
-                onFullscreenPlayerWillPresent={() => { console.log('onFullscreenPlayerWillPresent'); }}
-                onFullscreenPlayerDidPresent={() => { console.log('onFullscreenPlayerWillPresent'); }}
-                onFullscreenPlayerWillDismiss={() => {
-                  console.log('onFullscreenPlayerWillDismiss');
-                  this.props.onDismiss()
-                }}
-                onFullscreenPlayerDidDismiss={() => {
-                  console.log('onFullscreenPlayerDidDismiss');
-                  this.props.onDismiss()
-                }}
-                /* {...this.analytics.generateVideoEventProps()} */
-          /> : this.renderPlaceholder()}
-        <TouchableOpacity style={{position:'absolute',top:50,left:'50%'}} onPress={() => this.props.onDismiss()}>
-          <Text style={styles.button}>Close</Text>
-        </TouchableOpacity>
+        {view.playlist ? this.renderVideo(view.playlist) : this.renderPlaceholder()}
       </View>
     );
     /* <Text style={styles.title}>{this.broadcast.name}</Text> */
+  }
+
+  renderVideo(playlist) {
+    return (
+      <View style={{flex: 1}}>
+        <Video
+          source={{uri: playlist}}
+          ref={this.playerRef}
+          style={styles.fullScreen}
+          fullscreen={true}
+          fullscreenAutorotate={false}
+          fullscreenOrientation={'landscape'}
+          controls={true}
+          poster={this.broadcast.poster || this.broadcast.preview}
+          onFullscreenPlayerWillPresent={() => {
+            console.log('onFullscreenPlayerWillPresent');
+          }}
+          onFullscreenPlayerDidPresent={() => {
+            console.log('onFullscreenPlayerWillPresent');
+          }}
+          onFullscreenPlayerWillDismiss={() => {
+            console.log('onFullscreenPlayerWillDismiss');
+            this.props.onDismiss()
+          }}
+          onFullscreenPlayerDidDismiss={() => {
+            console.log('onFullscreenPlayerDidDismiss');
+            this.props.onDismiss()
+          }}
+          /* {...this.analytics.generateVideoEventProps()} */
+        />
+        <View style={{position:'absolute',top:50,left:'50%'}}>
+          {this.renderDismissButton()}
+        </View>
+      </View>
+    );
   }
 
   renderPlaceholder() {
@@ -134,6 +147,7 @@ export default class Broadcast extends Component<Props> {
       return (
         <View style={styles.container}>
           <ActivityIndicator animating size="large" />
+          {this.renderDismissButton()}
         </View>
       );
     } else if (this.broadcast.timeframe == 'future') {
@@ -150,10 +164,14 @@ export default class Broadcast extends Component<Props> {
     return (
       <View style={styles.container}>
         <Text style={styles.error}>{msg}</Text>
-        <TouchableOpacity onPress={() => this.props.onDismiss()}>
-          <Text style={styles.button}>Close</Text>
-        </TouchableOpacity>
+        {this.renderDismissButton()}
       </View>
+    );
+  }
+
+  renderDismissButton() {
+    return (
+      <Button onPress={() => this.props.onDismiss()} title="Back" />
     );
   }
 };
@@ -165,15 +183,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#000000',
-  },
-  button: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-    backgroundColor: '#000000',
-    color: '#ffffff',
-    borderColor: '#dddddd',
-    borderWidth: 1,
   },
   title: {
     fontSize: 20,
