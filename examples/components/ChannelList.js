@@ -1,26 +1,49 @@
 import React, {Component} from 'react';
-import {StyleSheet, FlatList, Text, View, TouchableOpacity, ActivityIndicator } from 'react-native';
+import {
+  ActivityIndicator,
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import PropTypes from 'prop-types';
 
 import { api } from 'boxcast-sdk-js';
-
 import BroadcastPreview from './BroadcastPreview';
 
-const PAGE_SIZE = 20;
+type Props = {
+  channelId: string,
+  horizontal?: boolean,
+  titleStyle?: StyleObj,
+  onSelectBroadcast?: () => mixed,
+  pageSize: int,
+};
 
-export default class Channel extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      broadcasts: [],
-      error: null,
-      page: 1,
-      loading: true,
-      refreshing: false,
-      loadingMore: false,
-      width: 0,
-      height: 0,
-    };
-  }
+export default class Channel extends Component<Props> {
+  static propTypes = {
+    channelId: PropTypes.string.isRequired,
+    horizontal: PropTypes.bool,
+    onSelectBroadcast: PropTypes.func,
+    pageSize: PropTypes.number,
+  };
+
+  static defaultProps = {
+    horizontal: false,
+    onSelectBroadcast: function(){},
+    pageSize: 20,
+  };
+
+  state = {
+    broadcasts: [],
+    error: null,
+    page: 1,
+    loading: true,
+    refreshing: false,
+    loadingMore: false,
+    width: 0,
+    height: 0,
+  };
 
   componentDidMount() {
     this._fetch();
@@ -44,7 +67,7 @@ export default class Channel extends Component {
                   keyExtractor={(item, index) => item.id}
                   onEndReached={() => this._handleLoadMore()}
                   onEndReachedThreshold={0.5}
-                  initialNumToRender={PAGE_SIZE}
+                  initialNumToRender={this.props.pageSize}
                   ListFooterComponent={() => this._renderFooter()}
                   refreshing={refreshing}
                   onRefresh={() => this._handleRefresh()}
@@ -56,14 +79,14 @@ export default class Channel extends Component {
   renderBroadcast(broadcast) {
     var style, broadcastStyle;
     if (this.props.horizontal) {
-      style = {marginRight: 15, height: this.state.height, width: this.state.height * 16/9};
+      style = {marginRight: 15};
       broadcastStyle = {height: this.state.height, width: this.state.height * 16/9};
     } else {
-      style = {marginBottom: 15, width: '100%', height: this.state.width * 9/16};
+      style = {marginBottom: 15};
       broadcastStyle = {width: '100%', height: this.state.height * 9/16};
     }
     return ( 
-      <View style={style}>
+      <View style={[style, broadcastStyle]}>
         <BroadcastPreview broadcast={broadcast}
                           style={broadcastStyle}
                           onPress={() => this.props.onSelectBroadcast(broadcast)} />
@@ -73,20 +96,8 @@ export default class Channel extends Component {
 
   _renderFooter() {
     if (!this.state.loadingMore) return null;
-
     return (
-      <View
-        style={{
-          position: 'relative',
-          width: '100%',
-          height: 50,
-          paddingVertical: 20,
-          borderTopWidth: 1,
-          marginTop: 10,
-          marginBottom: 10,
-          borderColor: '#f2f2f2'
-        }}
-      >
+      <View style={styles.footerLoading}>
         <ActivityIndicator animating size="large" />
       </View>
     );
@@ -100,11 +111,11 @@ export default class Channel extends Component {
   }
 
   _fetch() {
-    const { channelId } = this.props;
+    const { channelId, pageSize } = this.props;
     const args = {
       q: 'timeframe:relevant',
       s: '-starts_at',
-      l: PAGE_SIZE,
+      l: pageSize,
       p: this.state.page
     };
     api.broadcasts.list(channelId, args).then((r) => {
@@ -173,5 +184,15 @@ const styles = StyleSheet.create({
     bottom: 0,
     right: 0,
   },
+  footerLoading: {
+    position: 'relative',
+    width: '100%',
+    height: 50,
+    paddingVertical: 20,
+    borderTopWidth: 1,
+    marginTop: 10,
+    marginBottom: 10,
+    borderColor: '#f2f2f2'
+  }
 });
 

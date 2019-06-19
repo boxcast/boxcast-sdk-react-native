@@ -5,6 +5,6 @@ export default function ContainedImage(props) {
   return (
     <Image style={{flex:1, height: undefined, width: undefined}}
            resizeMode="contain"
-           {...props} />
+           source={{uri: props.uri}} />
   );
 };

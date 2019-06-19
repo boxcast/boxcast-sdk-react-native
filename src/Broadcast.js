@@ -1,37 +1,69 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, Image, AsyncStorage} from 'react-native';
+import {
+  ActivityIndicator,
+  AsyncStorage,
+  Image,
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  YellowBox,
+} from 'react-native';
+import PropTypes from 'prop-types';
 
 import Video from 'react-native-video';
 import { api, analytics } from 'boxcast-sdk-js';
 
-import {YellowBox} from 'react-native';
-YellowBox.ignoreWarnings(['Accessing view manager configs']);
 
+// Static initialization
+YellowBox.ignoreWarnings([
+  'Accessing view manager configs'
+]);
 analytics.configure({
   browser_name: 'React Native',
   browser_version: '1.0',
   player_version: 'boxcast-test-react-native-app v1.0'
 });
 
-export default class Broadcast extends Component {
+
+type Props = {
+  broadcast: object,
+  onDismiss?: () => mixed,
+};
+
+export default class Broadcast extends Component<Props> {
+  static propTypes = {
+    broadcast: PropTypes.object.isRequired,
+    onDismiss: PropTypes.func,
+  };
+
+  static defaultProps = {
+    onDismiss: function(){},
+  };
+
+  state = {
+    view: {},
+    error: null,
+    loading: true,
+  };
+
   constructor(props) {
     super(props);
-    this.state = {
-      view: {},
-      error: null,
-    };
     this.playerRef = React.createRef();
-    this.broadcast = this.props.navigation.getParam('broadcast', {});
-    this.analytics = analytics.mode('react-native-video').attach({
+    this.broadcast = this.props.broadcast;
+
+    // TODO: re-enable analytics
+    /*this.analytics = analytics.mode('react-native-video').attach({
       broadcast: this.broadcast,
       channel_id: this.broadcast.channel_id,
       AsyncStorage: AsyncStorage
-    });
+    });*/
   }
 
   componentDidMount() {
     api.views.get(this.broadcast.id).then((view) => {
-      this.setState({view, error: null});
+      this.setState({view: view, error: null, loading: false});
     }).catch((err) => {
       var error = err.response.data;
       if (error.error_description) {
@@ -39,12 +71,13 @@ export default class Broadcast extends Component {
       } else {
         error = `Error: ${JSON.stringify(error)}`;
       }
-      this.setState({view: {}, error});
+      this.setState({view: {}, error: error, loading: false});
     });
   }
 
   componentDidUpdate() {
     // console.log('Updated. Video player player: ', this.playerRef.current);
+    this.playerRef.current && this.playerRef.current.presentFullscreenPlayer();
   }
 
   componentWillUnmount() {
@@ -69,25 +102,43 @@ export default class Broadcast extends Component {
           <Video source={{uri: view.playlist}}
                 ref={this.playerRef}
                 style={styles.fullScreen}
+                fullscreen={true}
+                fullscreenAutorotate={false}
+                fullscreenOrientation={'landscape'}
                 controls={true}
-                {...this.analytics.generateVideoEventProps()}
+                poster={this.broadcast.poster || this.broadcast.preview}
+                onFullscreenPlayerWillPresent={() => { console.log('onFullscreenPlayerWillPresent'); }}
+                onFullscreenPlayerDidPresent={() => { console.log('onFullscreenPlayerWillPresent'); }}
+                onFullscreenPlayerWillDismiss={() => {
+                  console.log('onFullscreenPlayerWillDismiss');
+                  this.props.onDismiss()
+                }}
+                onFullscreenPlayerDidDismiss={() => {
+                  console.log('onFullscreenPlayerDidDismiss');
+                  this.props.onDismiss()
+                }}
+                /* {...this.analytics.generateVideoEventProps()} */
           /> : this.renderPlaceholder()}
-
-        <Text style={styles.title}>
-          {this.broadcast.name}
-        </Text>
+        <TouchableOpacity style={{position:'absolute',top:50,left:'50%'}} onPress={() => this.props.onDismiss()}>
+          <Text style={styles.button}>Close</Text>
+        </TouchableOpacity>
       </View>
     );
+    /* <Text style={styles.title}>{this.broadcast.name}</Text> */
   }
 
   renderPlaceholder() {
-    const { view, error } = this.state;
+    const { view, error, loading } = this.state;
     
-    if (this.broadcast.timeframe == 'future') {
-      // TODO: countdown?  placeholder image if broadcast.preview not available?
+    if (loading) {
       return (
-        <Image style={{width:80, height:50, marginRight:10}} source={{uri: this.broadcast.preview}} />
-      )
+        <View style={styles.container}>
+          <ActivityIndicator animating size="large" />
+        </View>
+      );
+    } else if (this.broadcast.timeframe == 'future') {
+      // TODO: countdown?  placeholder image if broadcast.preview not available?
+      return this.renderError(`Broadcast will start at ${broadcast.starts_at}`);
     } else if (error && error.toLowerCase().indexOf('payment') >= 0) {
       return this.renderError('Ticketed broadcasts cannot be viewed in the app.');
     } else {
@@ -97,7 +148,12 @@ export default class Broadcast extends Component {
 
   renderError(msg) {
     return (
-      <Text style={styles.error}>{msg}</Text>
+      <View style={styles.container}>
+        <Text style={styles.error}>{msg}</Text>
+        <TouchableOpacity onPress={() => this.props.onDismiss()}>
+          <Text style={styles.button}>Close</Text>
+        </TouchableOpacity>
+      </View>
     );
   }
 };
@@ -109,6 +165,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#000000',
+  },
+  button: {
+    fontSize: 20,
+    textAlign: 'center',
+    margin: 10,
+    backgroundColor: '#000000',
+    color: '#ffffff',
+    borderColor: '#dddddd',
+    borderWidth: 1,
   },
   title: {
     fontSize: 20,
