@@ -1,10 +1,14 @@
 import React, {Component} from 'react';
 import {
   ActivityIndicator,
+  Animated,
   AsyncStorage,
   Button,
+  Dimensions,
   Image,
+  PanResponder,
   Platform,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -62,6 +66,40 @@ export default class Broadcast extends Component<Props> {
     });*/
   }
 
+  componentWillMount() {
+    this._y = 0;
+    this._animation = new Animated.Value(0);
+    this._animation.addListener(({ value }) => {
+      this._y = value;
+    })
+
+    this._panResponder = PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderMove: Animated.event([
+        null,
+        {
+          dy: this._animation,
+        },
+      ]),
+      onPanResponderRelease: (e, gestureState) => {
+        if (gestureState.dy > 100) {
+          Animated.timing(this._animation, {
+            toValue: 300,
+            duration: 200,
+          }).start();
+          this._animation.setOffset(300);
+        } else {
+          this._animation.setOffset(0);
+          Animated.timing(this._animation, {
+            toValue: 0,
+            duration: 200,
+          }).start();
+        }
+      },
+    });
+  }
+
   componentDidMount() {
     api.views.get(this.broadcast.id).then((view) => {
       this.setState({view: view, error: null, loading: false});
@@ -106,36 +144,74 @@ export default class Broadcast extends Component<Props> {
   }
 
   renderVideo(playlist) {
+    const { width, height: screenHeight } = Dimensions.get("window");
+    const videoHeight = width * 0.5625;
+
+    const padding = 15;
+    const statusBarHeight = StatusBar.currentHeight || 0;
+    const yOutput = ((screenHeight - videoHeight) + (( videoHeight * .5) / 2)) - padding - statusBarHeight;
+    const xOutput = ((width * .5) / 2) - padding;
+
+    const opacityInterpolate = this._animation.interpolate({
+      inputRange: [0, 300],
+      outputRange: [1, 0],
+    });
+
+    const translateYInterpolate = this._animation.interpolate({
+      inputRange: [0, 300],
+      outputRange: [0, yOutput],
+      extrapolate: "clamp",
+    });
+
+    const scaleInterpolate = this._animation.interpolate({
+      inputRange: [0, 300],
+      outputRange: [1, 0.5],
+      extrapolate: "clamp",
+    });
+
+    const translateXInterpolate = this._animation.interpolate({
+      inputRange: [0, 300],
+      outputRange: [0, xOutput],
+      extrapolate: "clamp",
+    });
+
+    const scrollStyles = {
+      opacity: opacityInterpolate,
+      transform: [
+        {
+          translateY: translateYInterpolate,
+        },
+      ],
+    };
+
+    const videoStyles = {
+      transform: [
+        {
+          translateY: translateYInterpolate,
+        },
+        {
+          translateX: translateXInterpolate,
+        },
+        {
+          scale: scaleInterpolate,
+        },
+      ],
+    };
+
     return (
-      <View style={{flex: 1}}>
-        <Video
-          source={{uri: playlist}}
-          ref={this.playerRef}
-          style={styles.fullScreen}
-          fullscreen={true}
-          fullscreenAutorotate={false}
-          fullscreenOrientation={'landscape'}
-          controls={true}
-          poster={this.broadcast.poster || this.broadcast.preview}
-          onFullscreenPlayerWillPresent={() => {
-            console.log('onFullscreenPlayerWillPresent');
-          }}
-          onFullscreenPlayerDidPresent={() => {
-            console.log('onFullscreenPlayerWillPresent');
-          }}
-          onFullscreenPlayerWillDismiss={() => {
-            console.log('onFullscreenPlayerWillDismiss');
-            this.props.onDismiss()
-          }}
-          onFullscreenPlayerDidDismiss={() => {
-            console.log('onFullscreenPlayerDidDismiss');
-            this.props.onDismiss()
-          }}
-          /* {...this.analytics.generateVideoEventProps()} */
-        />
-        <View style={{position:'absolute',top:50,left:'50%'}}>
-          {this.renderDismissButton()}
-        </View>
+      <View style={styles.fullScreen} pointerEvents="box-none">
+        <Animated.View
+              style={[{ width, height: videoHeight }, videoStyles]}
+              {...this._panResponder.panHandlers}>
+          <Video
+            source={{uri: playlist}}
+            ref={this.playerRef}
+            style={styles.fullScreen}
+            controls={true}
+            poster={this.broadcast.poster || this.broadcast.preview}
+            /* {...this.analytics.generateVideoEventProps()} */
+          />
+        </Animated.View>
       </View>
     );
   }
