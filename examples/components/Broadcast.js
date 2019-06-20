@@ -18,6 +18,8 @@ import PropTypes from 'prop-types';
 import Video from 'react-native-video';
 import { api, analytics } from 'boxcast-sdk-js';
 
+import Badge from './Badge';
+
 
 // Static initialization
 YellowBox.ignoreWarnings([
@@ -113,13 +115,14 @@ export default class Broadcast extends Component<Props> {
         style={styles.fullScreen}
         controls={true}
         poster={this.props.broadcast.poster || this.props.broadcast.preview}
-        /* {...this.analytics.generateVideoEventProps()} */
       />
     );
+        /* {...this.analytics.generateVideoEventProps()} */
   }
 
   renderPlaceholder() {
     const { view, error, loading } = this.state;
+    const { timeframe, starts_at } = this.props.broadcast;
     
     if (loading) {
       return (
@@ -128,20 +131,24 @@ export default class Broadcast extends Component<Props> {
           {this.renderDismissButton()}
         </View>
       );
-    } else if (this.props.broadcast.timeframe == 'future') {
-      // TODO: countdown?  placeholder image if broadcast.preview not available?
-      return this.renderError(`Broadcast will start at ${broadcast.starts_at}`);
+    } else if (timeframe == 'future') {
+      return this.renderError('default', `Broadcast starts ${starts_at}`);
     } else if (error && error.toLowerCase().indexOf('payment') >= 0) {
-      return this.renderError('Ticketed broadcasts cannot be viewed in the app.');
+      return this.renderError('warning', 'Ticketed broadcasts cannot be viewed in the app.');
     } else {
-      return this.renderError(error || 'This video is not available.');
+      return this.renderError('warning', error || 'This video is not available.');
     }
   }
 
-  renderError(msg) {
+  renderError(type, msg) {
     return (
       <View style={styles.container}>
-        <Text style={styles.error}>{msg}</Text>
+        <Image
+          source={{uri: this.props.broadcast.preview}}
+          style={{position:'absolute', top:0, left:0, right:0, bottom:0}}
+          resizeMode={'cover'}
+        />
+        <Badge type={type} text={msg} />
         {this.renderDismissButton()}
       </View>
     );

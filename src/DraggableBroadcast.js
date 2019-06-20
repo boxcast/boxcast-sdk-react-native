@@ -18,7 +18,7 @@ import {
 import PropTypes from 'prop-types';
 
 import Broadcast from './Broadcast';
-
+import BroadcastDetails from './BroadcastDetails';
 
 
 type Props = {
@@ -114,9 +114,7 @@ export default class DraggableBroadcast extends Component<Props> {
   }
 
   render() {
-    const { broadcast } = this.props;
     const transforms = this._computeDraggedTransforms();
-
     const videoStyles = [
       { width: transforms.width, height: transforms.videoHeight },
       transforms.video,
@@ -129,11 +127,7 @@ export default class DraggableBroadcast extends Component<Props> {
           {this.state.enableBroadcast && <Broadcast {...this.props} />}
         </Animated.View>
         <Animated.ScrollView style={[styles.detailsBox, transforms.details]}>
-          <View style={styles.padding}>
-            <Text style={styles.title}>{broadcast.name}</Text>
-            <Text>{broadcast.description}</Text>
-            <Text>Broadcasted {broadcast.starts_at}</Text>
-          </View>
+          <BroadcastDetails {...this.props} />
         </Animated.ScrollView>
       </View>
     );
@@ -227,12 +221,5 @@ const styles = StyleSheet.create({
   detailsBox: {
     flex: 1,
     backgroundColor: "#FFF",
-  },
-  padding: {
-    paddingVertical: 15,
-    paddingHorizontal: 15,
-  },
-  title: {
-    fontSize: 28,
   },
 });

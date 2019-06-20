@@ -28,7 +28,7 @@ export default class App extends Component<Props> {
 
         <Text style={styles.welcome}>Horizontal Channel:</Text>
         <View style={{height: 150, width: '100%', borderWidth: 1, borderColor: '#ff0000'}}>
-          <ChannelList channelId={'0xQfGiFHjz3YBfO3o1jd'}
+          <ChannelList channelId={'lbkvcqkzmxyhzwzsbj6w'}
                        onSelectBroadcast={(broadcast) => {
                          console.log('Selected', broadcast);
                          this.setState({broadcast});
