@@ -30,50 +30,49 @@ react-native link react-native-video
 import { ChannelList, BroadcastModalView } from 'boxcast-sdk-react-native';
 ```
 
-* Render horizontal channel scroller
+* Render horizontal channel scroller with dockable video player on tap
 
 ```JavaScript
+...
+
 render() {
   return (
-    <View style={{height:150, width:'100%'}}>
+    <View style={{flex:1, height:150, width:'100%'}}>
       <ChannelList channelId={MY_BOXCAST_CHANNEL_ID}
                    query={'timeframe:relevant timeframe:next'}
                    sort={'-starts_at'}
                    pageSize={10}
                    onSelectBroadcast={(broadcast) => this.setState({broadcast})}
                    horizontal={true} />
+      {this.state.broadcast &&
+        <BroadcastModalView
+            broadcast={this.state.broadcast}
+            dockable={true}
+            onDismiss={() => this.setState({broadcast: null})} />
+      }
     </View>
   );
 }
 ```
 
-* Render vertical channel scroller
+* Render vertical channel scroller with fixed (non-dockable) video player on tap
 
 ```JavaScript
+...
+
 render() {
   return (
-    <View style={{width:'100%'}}>
+    <View style={{flex:1}}>
       <ChannelList channelId={MY_BOXCAST_CHANNEL_ID}
                    query={'timeframe:relevant timeframe:next'}
                    sort={'-starts_at'}
                    pageSize={10}
                    onSelectBroadcast={(broadcast) => this.setState({broadcast})}
                    horizontal={false} />
-    </View>
-  );
-}
-```
-
-* Show broadcast video player in modal
-
-```JavaScript
-render() {
-  return (
-    <View style={styles.container}>
       {this.state.broadcast &&
         <BroadcastModalView
             broadcast={this.state.broadcast}
-            dockable={true}
+            dockable={false}
             onDismiss={() => this.setState({broadcast: null})} />
       }
     </View>
