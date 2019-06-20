@@ -1,47 +1,33 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import {
   ActivityIndicator,
-  Animated,
   AsyncStorage,
-  Button,
   Image,
-  Platform,
-  StatusBar,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
-  YellowBox,
 } from 'react-native';
-import PropTypes from 'prop-types';
-
 import Video from 'react-native-video';
 import { api, analytics } from 'boxcast-sdk-js';
-
 import Badge from './Badge';
 
-
-// Static initialization
-YellowBox.ignoreWarnings([
-  'Accessing view manager configs',
-  'Invalid image url',
-  'source.uri should not be',
-  'Task orphaned',
-  'Remote debugger is in a background tab',
-]);
 analytics.configure({
   browser_name: 'React Native',
   browser_version: '1.0',
-  player_version: 'boxcast-test-react-native-app v1.0'
+  player_version: 'boxcast-sdk-react-native v1.0'
 });
-
 
 type Props = {
   broadcast: object,
   onDismiss?: () => mixed,
 };
 
-export default class Broadcast extends Component<Props> {
+export default class BroadcastVideo extends Component<Props> {
+  static configureAnalytics(props) {
+    analytics.configure(props);
+  }
+
   static propTypes = {
     broadcast: PropTypes.object.isRequired,
     onDismiss: PropTypes.func,
@@ -200,4 +186,3 @@ const styles = StyleSheet.create({
     right: 0,
   },
 });
-

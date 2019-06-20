@@ -1,9 +1,6 @@
-/* @flow */
-
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, Text, View } from 'react-native';
-
 import Badge from './Badge';
 
 type Props = {
@@ -11,7 +8,6 @@ type Props = {
 };
 
 export default class BroadcastDetails extends Component<Props> {
-
   static propTypes = {
     broadcast: PropTypes.object.isRequired,
   };
@@ -36,7 +32,7 @@ export default class BroadcastDetails extends Component<Props> {
       </View>
     );
   }
-}
+};
 
 const styles = StyleSheet.create({
   padding: {

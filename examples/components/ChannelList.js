@@ -1,14 +1,12 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import {
   ActivityIndicator,
   FlatList,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
-import PropTypes from 'prop-types';
-
 import { api } from 'boxcast-sdk-js';
 import BroadcastPreview from './BroadcastPreview';
 
@@ -203,4 +201,3 @@ const styles = StyleSheet.create({
     borderColor: '#f2f2f2'
   }
 });
-

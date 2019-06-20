@@ -1,8 +1,5 @@
-/* @flow */
-
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
 import {
   Image,
   StyleSheet,
@@ -26,7 +23,6 @@ type Props = {
 };
 
 export default class CardWithImage extends Component<Props> {
-
   static propTypes = {
     style: PropTypes.any,
     uri: PropTypes.string.isRequired,
@@ -90,7 +86,7 @@ export default class CardWithImage extends Component<Props> {
       </View>
     );
   }
-}
+};
 
 const styles = StyleSheet.create({
   container: {

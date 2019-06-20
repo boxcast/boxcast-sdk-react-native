@@ -7,7 +7,7 @@
  */
 
 import React, {Component} from 'react';
-import {StyleSheet, Text, View, Modal, Switch} from 'react-native';
+import {StyleSheet, Text, View, Switch, YellowBox} from 'react-native';
 
 //import { ChannelList } from 'boxcast-react-native';
 import ChannelList from './components/ChannelList';
@@ -16,6 +16,14 @@ import BroadcastModalView from './components/BroadcastModalView';
 
 // TODO: look up your own channel IDs
 const MY_BOXCAST_CHANNEL_ID = 'lbkvcqkzmxyhzwzsbj6w';
+
+YellowBox.ignoreWarnings([
+  'Accessing view manager configs',
+  'Invalid image url',
+  'source.uri should not be',
+  'Task orphaned',
+  'Remote debugger is in a background tab',
+]);
 
 type Props = {};
 export default class App extends Component<Props> {

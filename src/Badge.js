@@ -1,13 +1,6 @@
-/* @flow */
-
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-
-import {
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 
 type Props = {
   text: string,
@@ -15,7 +8,6 @@ type Props = {
 };
 
 export default class Badge extends PureComponent<Props> {
-
   static propTypes = {
     text: PropTypes.string.isRequired,
     type: PropTypes.oneOf(['default', 'red', 'warning']),
@@ -27,12 +19,11 @@ export default class Badge extends PureComponent<Props> {
 
   render() {
     const { text, type} = this.props;
-
     return (
       <Text style={[styles.padding, styles.text, styles[type]]}>{text}</Text>
     );
   }
-}
+};
 
 const styles = StyleSheet.create({
   padding: {

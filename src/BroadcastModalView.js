@@ -1,26 +1,18 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import {
-  ActivityIndicator,
   Animated,
-  AsyncStorage,
-  Button,
   Dimensions,
-  Image,
   PanResponder,
-  Platform,
   StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  YellowBox,
 } from 'react-native';
-import PropTypes from 'prop-types';
 import type { StyleObj } from 'react-native/Libraries/StyleSheet/StyleSheetTypes';
-
 import BroadcastVideo from './BroadcastVideo';
 import BroadcastDetails from './BroadcastDetails';
-
 
 type Props = {
   broadcast: object,

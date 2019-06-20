@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
-import {View, StyleSheet} from 'react-native';
 import PropTypes from 'prop-types';
+import {View, StyleSheet} from 'react-native';
 import type { StyleObj } from 'react-native/Libraries/StyleSheet/StyleSheetTypes';
-
 import Badge from './Badge';
 import CardWithImage from './CardWithImage';
 
@@ -59,7 +58,7 @@ export default class BroadcastPreview extends Component<Props> {
       </View>
     );
   }
-}
+};
 
 const styles = StyleSheet.create({
   container: {
