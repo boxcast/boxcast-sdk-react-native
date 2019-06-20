@@ -51,7 +51,6 @@ export default class BroadcastModalView extends Component<Props> {
 
   state = {
     docked: false,
-    enableBroadcast: true,
   };
 
   componentWillMount() {
@@ -91,12 +90,8 @@ export default class BroadcastModalView extends Component<Props> {
     if (!newBroadcastId) {
       return this.props.onDismiss();
     }
-    if (!this.state.enableBroadcast) {
-      this.setState({enableBroadcast: true});
-    }
     if (prevBroadcastId != newBroadcastId) {
       this._springBackToTop();
-      this.setState({enableBroadcast: false});
     }
   }
 
@@ -142,7 +137,7 @@ export default class BroadcastModalView extends Component<Props> {
     return (
       <View style={styles.fullScreen} pointerEvents="box-none">
         <Animated.View style={videoStyles} {...animationProps}>
-          {this.state.enableBroadcast && <BroadcastVideo {...this.props} />}
+          {<BroadcastVideo {...this.props} />}
         </Animated.View>
         <Animated.ScrollView style={[styles.detailsBox, transforms.details]}>
           <BroadcastDetails {...this.props} />

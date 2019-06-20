@@ -70,6 +70,11 @@ export default class Broadcast extends Component<Props> {
   }
 
   componentDidMount() {
+    this._fetchBroadcastAndView();
+  }
+
+  _fetchBroadcastAndView() {
+    this.setState({view: {}, error: null, loading: true});
     api.views.get(this.props.broadcast.id).then((view) => {
       this.setState({view: view, error: null, loading: false});
     }).catch((err) => {
@@ -83,9 +88,11 @@ export default class Broadcast extends Component<Props> {
     });
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     // console.log('Updated. Video player player: ', this.playerRef.current);
-    this.playerRef.current && this.playerRef.current.presentFullscreenPlayer();
+    if (this.props.broadcast.id != prevProps.broadcast.id) {
+      this._fetchBroadcastAndView();
+    }
   }
 
   componentWillUnmount() {
@@ -93,11 +100,14 @@ export default class Broadcast extends Component<Props> {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    // Never fire an update on this sub-tree unless playlist is changing
-    if (!this.state.view.playlist || this.state.view.playlist !== nextState.view.playlist) {
+    if (this.props.broadcast.id !== nextProps.broadcast.id) {
       return true;
+    } else if (!this.state.view.playlist || !nextState.view.playlist) {
+      return true; // we don't/won't have a video so updating is trivial
+    } else if (this.state.view.playlist !== nextState.view.playlist) {
+      return true; // playlist changed
     } else {
-      return false;
+      return false; // otherwise, avoid sub-tree updates
     }
   }
 
