@@ -11,9 +11,7 @@ import {StyleSheet, Text, View, Modal, Switch} from 'react-native';
 
 //import { ChannelList } from 'boxcast-react-native';
 import ChannelList from './components/ChannelList';
-import Broadcast from './components/Broadcast';
 import BroadcastModalView from './components/BroadcastModalView';
-import GestureRecognizer from './components/GestureRecognizer';
 
 
 // TODO: look up your own channel IDs

@@ -18,7 +18,7 @@ import {
 import PropTypes from 'prop-types';
 import type { StyleObj } from 'react-native/Libraries/StyleSheet/StyleSheetTypes';
 
-import Broadcast from './Broadcast';
+import BroadcastVideo from './BroadcastVideo';
 import BroadcastDetails from './BroadcastDetails';
 
 
@@ -142,7 +142,7 @@ export default class BroadcastModalView extends Component<Props> {
     return (
       <View style={styles.fullScreen} pointerEvents="box-none">
         <Animated.View style={videoStyles} {...animationProps}>
-          {this.state.enableBroadcast && <Broadcast {...this.props} />}
+          {this.state.enableBroadcast && <BroadcastVideo {...this.props} />}
         </Animated.View>
         <Animated.ScrollView style={[styles.detailsBox, transforms.details]}>
           <BroadcastDetails {...this.props} />
