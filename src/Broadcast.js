@@ -119,6 +119,7 @@ export default class Broadcast extends Component<Props> {
         poster={this.props.broadcast.poster || this.props.broadcast.preview}
       />
     );
+    // TODO: re-enable analytics props on <Video>
         /* {...this.analytics.generateVideoEventProps()} */
   }
 
@@ -130,7 +131,6 @@ export default class Broadcast extends Component<Props> {
       return (
         <View style={styles.container}>
           <ActivityIndicator animating size="large" />
-          {this.renderDismissButton()}
         </View>
       );
     } else if (timeframe == 'future') {
@@ -147,18 +147,12 @@ export default class Broadcast extends Component<Props> {
       <View style={styles.container}>
         <Image
           source={{uri: this.props.broadcast.preview}}
-          style={{position:'absolute', top:0, left:0, right:0, bottom:0}}
+          style={styles.fullScreen}
           resizeMode={'cover'}
+          pointerEvents={'none'}
         />
         <Badge type={type} text={msg} />
-        {this.renderDismissButton()}
       </View>
-    );
-  }
-
-  renderDismissButton() {
-    return (
-      <Button onPress={() => this.props.onDismiss()} title="Back" />
     );
   }
 };

@@ -16,6 +16,7 @@ import {
   YellowBox,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import type { StyleObj } from 'react-native/Libraries/StyleSheet/StyleSheetTypes';
 
 import Broadcast from './Broadcast';
 import BroadcastDetails from './BroadcastDetails';
@@ -23,17 +24,27 @@ import BroadcastDetails from './BroadcastDetails';
 
 type Props = {
   broadcast: object,
+  dockable?: boolean,
+  dismissText?: string,
+  dismissStyle?: StyleObj,
   onDismiss?: () => mixed,
+  dragAcceleration: number,
 };
 
-export default class DraggableBroadcast extends Component<Props> {
+export default class BroadcastModalView extends Component<Props> {
   static propTypes = {
     broadcast: PropTypes.object.isRequired,
+    dockable: PropTypes.bool,
+    dismissText: PropTypes.string,
+    dismissStyle: PropTypes.any,
     onDismiss: PropTypes.func,
     dragAcceleration: PropTypes.number,
   };
 
   static defaultProps = {
+    dockable: false,
+    dismissText: 'Close',
+    dismissStyle: {},
     onDismiss: function(){},
     dragAcceleration: 1.5,
   };
@@ -44,6 +55,10 @@ export default class DraggableBroadcast extends Component<Props> {
   };
 
   componentWillMount() {
+    this._initPanResponder();
+  }
+
+  _initPanResponder() {
     const { width, height: screenHeight } = Dimensions.get("window");
     this.animHeight = screenHeight / this.props.dragAcceleration;
     this.animWidth = width / (3 * this.props.dragAcceleration);
@@ -59,7 +74,9 @@ export default class DraggableBroadcast extends Component<Props> {
         dx: this._xAnimation,
       }]),
       onPanResponderRelease: (e, gestureState) => {
-        if (this.state.docked) {
+        if (!this.props.dockable) {
+          return;
+        } else if (this.state.docked) {
           this._handleHorizontalPan(gestureState);
         } else {
           this._handleVerticalPan(gestureState);
@@ -114,6 +131,7 @@ export default class DraggableBroadcast extends Component<Props> {
   }
 
   render() {
+    const animationProps = this._panResponder.panHandlers;
     const transforms = this._computeDraggedTransforms();
     const videoStyles = [
       { width: transforms.width, height: transforms.videoHeight },
@@ -123,11 +141,14 @@ export default class DraggableBroadcast extends Component<Props> {
 
     return (
       <View style={styles.fullScreen} pointerEvents="box-none">
-        <Animated.View style={videoStyles} {...this._panResponder.panHandlers}>
+        <Animated.View style={videoStyles} {...animationProps}>
           {this.state.enableBroadcast && <Broadcast {...this.props} />}
         </Animated.View>
         <Animated.ScrollView style={[styles.detailsBox, transforms.details]}>
           <BroadcastDetails {...this.props} />
+          <TouchableOpacity
+            style={[styles.dismissButton, this.props.dismissStyle]}
+            onPress={() => this.props.onDismiss()}><Text>{this.props.dismissText}</Text></TouchableOpacity>
         </Animated.ScrollView>
       </View>
     );
@@ -144,7 +165,19 @@ export default class DraggableBroadcast extends Component<Props> {
 
     var videoStyles = {}, detailStyles = {};
 
-    if (this.state.docked) {
+    if (!this.props.dockable) {
+      videoStyles = {
+        transform: [
+          {translateY: 0},
+          {translateX: 0},
+          {scale: 1},
+        ],
+      };
+      detailStyles = {
+        opacity: 1,
+        transform: [{translateY: 0}],
+      };
+    } else if (this.state.docked) {
       // When docked, animate the X movement along a horiztonal axis to dismiss
       translateXInterpolate = this._xAnimation.interpolate({
         inputRange: [0, this.animWidth],
@@ -220,6 +253,15 @@ const styles = StyleSheet.create({
   },
   detailsBox: {
     flex: 1,
-    backgroundColor: "#FFF",
+    backgroundColor: "#ffffff",
+  },
+  dismissButton: {
+    alignItems: 'center',
+    backgroundColor: '#dddddd',
+    color: '#333333',
+    borderRadius: 4,
+    borderWidth: 0,
+    padding: 10,
+    margin: 15,
   },
 });

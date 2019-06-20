@@ -12,8 +12,13 @@ import {StyleSheet, Text, View, Modal, TouchableHighlight} from 'react-native';
 //import { ChannelList } from 'boxcast-react-native';
 import ChannelList from './components/ChannelList';
 import Broadcast from './components/Broadcast';
-import DraggableBroadcast from './components/DraggableBroadcast';
+import BroadcastModalView from './components/BroadcastModalView';
 import GestureRecognizer from './components/GestureRecognizer';
+
+
+// TODO: look up your own channel IDs
+const MY_BOXCAST_CHANNEL_1_ID = 'lbkvcqkzmxyhzwzsbj6w';
+const MY_BOXCAST_CHANNEL_2_ID = '0xQfGiFHjz3YBfO3o1jd';
 
 type Props = {};
 export default class App extends Component<Props> {
@@ -25,43 +30,37 @@ export default class App extends Component<Props> {
     return (
       <View style={styles.container}>
 
-
         <Text style={styles.welcome}>Horizontal Channel:</Text>
         <View style={{height: 150, width: '100%', borderWidth: 1, borderColor: '#ff0000'}}>
-          <ChannelList channelId={'lbkvcqkzmxyhzwzsbj6w'}
-                       onSelectBroadcast={(broadcast) => {
-                         console.log('Selected', broadcast);
-                         this.setState({broadcast});
-                       }}
+          <ChannelList channelId={MY_BOXCAST_CHANNEL_1_ID}
+                       onSelectBroadcast={(broadcast) => this.showBroadcast(broadcast)}
                        horizontal={true} />
         </View>
 
-
         <Text style={styles.welcome}>Veritical Channel:</Text>
         <View style={{height: 300, width: '75%', borderWidth: 1, borderColor: '#ff0000'}}>
-          <ChannelList channelId={'0xQfGiFHjz3YBfO3o1jd'}
-                       onSelectBroadcast={(broadcast) => {
-                         console.log('Selected', broadcast);
-                         this.setState({broadcast});
-                       }}
+          <ChannelList channelId={MY_BOXCAST_CHANNEL_2_ID}
+                       onSelectBroadcast={(broadcast) => this.showBroadcast(broadcast)}
                        horizontal={false} />
         </View>
 
-
-        <Modal animationType="slide"
-               transparent={true}
-               visible={false && this.state.broadcast !== null}>
-          <View style={{flex: 1, backgroundColor: '#000000'}}>
-          </View>
-        </Modal>
-
         {this.state.broadcast &&
-          <DraggableBroadcast
+          <BroadcastModalView
               broadcast={this.state.broadcast}
-              onDismiss={() => this.setState({broadcast: null})} />
+              dockable={true}
+              onDismiss={() => { console.log('closing'); this.closeBroadcast(); }} />
         }
       </View>
     );
+  }
+
+  showBroadcast(broadcast) {
+    console.log('Showing broadcast: ', broadcast);
+    this.setState({broadcast});
+  }
+
+  closeBroadcast() {
+    this.setState({broadcast: null});
   }
 }
 
