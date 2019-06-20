@@ -4,9 +4,7 @@ import {
   Animated,
   AsyncStorage,
   Button,
-  Dimensions,
   Image,
-  PanResponder,
   Platform,
   StatusBar,
   StyleSheet,
@@ -56,52 +54,17 @@ export default class Broadcast extends Component<Props> {
   constructor(props) {
     super(props);
     this.playerRef = React.createRef();
-    this.broadcast = this.props.broadcast;
 
     // TODO: re-enable analytics
     /*this.analytics = analytics.mode('react-native-video').attach({
-      broadcast: this.broadcast,
-      channel_id: this.broadcast.channel_id,
+      broadcast: this.props.broadcast,
+      channel_id: this.props.broadcast.channel_id,
       AsyncStorage: AsyncStorage
     });*/
   }
 
-  componentWillMount() {
-    this._y = 0;
-    this._animation = new Animated.Value(0);
-    this._animation.addListener(({ value }) => {
-      this._y = value;
-    })
-
-    this._panResponder = PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onMoveShouldSetPanResponder: () => true,
-      onPanResponderMove: Animated.event([
-        null,
-        {
-          dy: this._animation,
-        },
-      ]),
-      onPanResponderRelease: (e, gestureState) => {
-        if (gestureState.dy > 100) {
-          Animated.timing(this._animation, {
-            toValue: 300,
-            duration: 200,
-          }).start();
-          this._animation.setOffset(300);
-        } else {
-          this._animation.setOffset(0);
-          Animated.timing(this._animation, {
-            toValue: 0,
-            duration: 200,
-          }).start();
-        }
-      },
-    });
-  }
-
   componentDidMount() {
-    api.views.get(this.broadcast.id).then((view) => {
+    api.views.get(this.props.broadcast.id).then((view) => {
       this.setState({view: view, error: null, loading: false});
     }).catch((err) => {
       var error = err.response.data;
@@ -140,79 +103,18 @@ export default class Broadcast extends Component<Props> {
         {view.playlist ? this.renderVideo(view.playlist) : this.renderPlaceholder()}
       </View>
     );
-    /* <Text style={styles.title}>{this.broadcast.name}</Text> */
   }
 
   renderVideo(playlist) {
-    const { width, height: screenHeight } = Dimensions.get("window");
-    const videoHeight = width * 0.5625;
-
-    const padding = 15;
-    const statusBarHeight = StatusBar.currentHeight || 0;
-    const yOutput = ((screenHeight - videoHeight) + (( videoHeight * .5) / 2)) - padding - statusBarHeight;
-    const xOutput = ((width * .5) / 2) - padding;
-
-    const opacityInterpolate = this._animation.interpolate({
-      inputRange: [0, 300],
-      outputRange: [1, 0],
-    });
-
-    const translateYInterpolate = this._animation.interpolate({
-      inputRange: [0, 300],
-      outputRange: [0, yOutput],
-      extrapolate: "clamp",
-    });
-
-    const scaleInterpolate = this._animation.interpolate({
-      inputRange: [0, 300],
-      outputRange: [1, 0.5],
-      extrapolate: "clamp",
-    });
-
-    const translateXInterpolate = this._animation.interpolate({
-      inputRange: [0, 300],
-      outputRange: [0, xOutput],
-      extrapolate: "clamp",
-    });
-
-    const scrollStyles = {
-      opacity: opacityInterpolate,
-      transform: [
-        {
-          translateY: translateYInterpolate,
-        },
-      ],
-    };
-
-    const videoStyles = {
-      transform: [
-        {
-          translateY: translateYInterpolate,
-        },
-        {
-          translateX: translateXInterpolate,
-        },
-        {
-          scale: scaleInterpolate,
-        },
-      ],
-    };
-
     return (
-      <View style={styles.fullScreen} pointerEvents="box-none">
-        <Animated.View
-              style={[{ width, height: videoHeight }, videoStyles]}
-              {...this._panResponder.panHandlers}>
-          <Video
-            source={{uri: playlist}}
-            ref={this.playerRef}
-            style={styles.fullScreen}
-            controls={true}
-            poster={this.broadcast.poster || this.broadcast.preview}
-            /* {...this.analytics.generateVideoEventProps()} */
-          />
-        </Animated.View>
-      </View>
+      <Video
+        source={{uri: playlist}}
+        ref={this.playerRef}
+        style={styles.fullScreen}
+        controls={true}
+        poster={this.props.broadcast.poster || this.props.broadcast.preview}
+        /* {...this.analytics.generateVideoEventProps()} */
+      />
     );
   }
 
@@ -226,7 +128,7 @@ export default class Broadcast extends Component<Props> {
           {this.renderDismissButton()}
         </View>
       );
-    } else if (this.broadcast.timeframe == 'future') {
+    } else if (this.props.broadcast.timeframe == 'future') {
       // TODO: countdown?  placeholder image if broadcast.preview not available?
       return this.renderError(`Broadcast will start at ${broadcast.starts_at}`);
     } else if (error && error.toLowerCase().indexOf('payment') >= 0) {

@@ -106,7 +106,7 @@ class GestureRecognizer extends Component {
   }
 
   render() {
-    return (<View {...this.props} {...this._panResponder.panHandlers}/>);
+    return (<View collapsable={false} {...this.props} {...this._panResponder.panHandlers}/>);
   }
 };
 

@@ -12,6 +12,7 @@ import {StyleSheet, Text, View, Modal, TouchableHighlight} from 'react-native';
 //import { ChannelList } from 'boxcast-react-native';
 import ChannelList from './components/ChannelList';
 import Broadcast from './components/Broadcast';
+import DraggableBroadcast from './components/DraggableBroadcast';
 import GestureRecognizer from './components/GestureRecognizer';
 
 type Props = {};
@@ -47,14 +48,17 @@ export default class App extends Component<Props> {
         </View>
 
 
-        <Modal animationType="slide" transparent={false} visible={this.state.broadcast !== null}>
-          <View style={{marginTop: 0, borderWidth: 1, borderColor: '#ff0000', flex: 1}}>
-            {this.state.broadcast &&
-              <Broadcast broadcast={this.state.broadcast}
-                         onDismiss={() => this.setState({broadcast: null})} />
-            }
+        <Modal animationType="slide"
+               transparent={true}
+               visible={false && this.state.broadcast !== null}>
+          <View style={{flex: 1, backgroundColor: '#000000'}}>
           </View>
         </Modal>
+            {this.state.broadcast &&
+              <DraggableBroadcast
+                  broadcast={this.state.broadcast}
+                  onDismiss={() => this.setState({broadcast: null})} />
+            }
       </View>
     );
   }
