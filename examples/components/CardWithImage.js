@@ -10,7 +10,6 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-
 import type { StyleObj } from 'react-native/Libraries/StyleSheet/StyleSheetTypes';
 
 type Props = {

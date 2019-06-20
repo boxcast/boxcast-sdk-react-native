@@ -17,21 +17,27 @@ type Props = {
   horizontal?: boolean,
   titleStyle?: StyleObj,
   onSelectBroadcast?: () => mixed,
-  pageSize: int,
+  pageSize?: int,
+  query?: string,
+  sort?: string,
 };
 
-export default class Channel extends Component<Props> {
+export default class ChannelList extends Component<Props> {
   static propTypes = {
     channelId: PropTypes.string.isRequired,
     horizontal: PropTypes.bool,
     onSelectBroadcast: PropTypes.func,
     pageSize: PropTypes.number,
+    query: PropTypes.string,
+    sort: PropTypes.string,
   };
 
   static defaultProps = {
     horizontal: false,
     onSelectBroadcast: function(){},
     pageSize: 20,
+    query: 'timeframe:relevant',
+    sort: '-starts_at',
   };
 
   state = {
@@ -112,14 +118,13 @@ export default class Channel extends Component<Props> {
   }
 
   _fetch() {
-    const { channelId, pageSize } = this.props;
     const args = {
-      q: 'timeframe:relevant',
-      s: '-starts_at',
-      l: pageSize,
+      q: this.props.query,
+      s: this.props.sort,
+      l: this.props.pageSize,
       p: this.state.page
     };
-    api.broadcasts.list(channelId, args).then((r) => {
+    api.broadcasts.list(this.props.channelId, args).then((r) => {
       this.setState({
         broadcasts: [].concat(this.state.broadcasts).concat(r.data),
         error: null,

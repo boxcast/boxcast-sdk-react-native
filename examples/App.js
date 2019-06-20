@@ -33,6 +33,9 @@ export default class App extends Component<Props> {
         <Text style={styles.welcome}>Horizontal Channel:</Text>
         <View style={{height: 150, width: '100%', borderWidth: 1, borderColor: '#ff0000'}}>
           <ChannelList channelId={MY_BOXCAST_CHANNEL_1_ID}
+                       query={'timeframe:relevant timeframe:next'}
+                       sort={'-starts_at'}
+                       pageSize={10}
                        onSelectBroadcast={(broadcast) => this.showBroadcast(broadcast)}
                        horizontal={true} />
         </View>
@@ -40,6 +43,9 @@ export default class App extends Component<Props> {
         <Text style={styles.welcome}>Veritical Channel:</Text>
         <View style={{height: 300, width: '75%', borderWidth: 1, borderColor: '#ff0000'}}>
           <ChannelList channelId={MY_BOXCAST_CHANNEL_2_ID}
+                       query={'timeframe:relevant timeframe:next'}
+                       sort={'-starts_at'}
+                       pageSize={10}
                        onSelectBroadcast={(broadcast) => this.showBroadcast(broadcast)}
                        horizontal={false} />
         </View>
