@@ -41,6 +41,7 @@ export default class Channel extends Component<Props> {
     loading: true,
     refreshing: false,
     loadingMore: false,
+    hasMorePages: true,
     width: 0,
     height: 0,
   };
@@ -105,7 +106,7 @@ export default class Channel extends Component<Props> {
 
   _handleRefresh() {
     this.setState(
-      {broadcasts: [], page: 1, refreshing: true},
+      {broadcasts: [], page: 1, refreshing: true, hasMorePages: true},
       () => this._fetch()
     );
   }
@@ -124,7 +125,8 @@ export default class Channel extends Component<Props> {
         error: null,
         loading: false,
         refreshing: false,
-        loadingMore: false
+        loadingMore: false,
+        hasMorePages: !!r.pagination.next,
       });
     }).catch((err) => {
       var error = err.response.data;
@@ -143,6 +145,7 @@ export default class Channel extends Component<Props> {
   }
 
   _handleLoadMore() {
+    if (!this.state.hasMorePages) return;
     this.setState(
       (prevState, nextProps) => ({
         page: prevState.page + 1,
