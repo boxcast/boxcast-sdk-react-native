@@ -7,7 +7,7 @@
  */
 
 import React, {Component} from 'react';
-import {StyleSheet, Text, View, Modal, TouchableHighlight} from 'react-native';
+import {StyleSheet, Text, View, Modal, Switch} from 'react-native';
 
 //import { ChannelList } from 'boxcast-react-native';
 import ChannelList from './components/ChannelList';
@@ -24,36 +24,46 @@ type Props = {};
 export default class App extends Component<Props> {
   state = {
     broadcast: null,
+    dockable: true,
   };
 
   render() {
     return (
       <View style={styles.container}>
 
-        <Text style={styles.welcome}>Horizontal Channel:</Text>
-        <View style={{height: 150, width: '100%', borderWidth: 1, borderColor: '#ff0000'}}>
-          <ChannelList channelId={MY_BOXCAST_CHANNEL_1_ID}
-                       query={'timeframe:relevant timeframe:next'}
-                       sort={'-starts_at'}
-                       pageSize={10}
-                       onSelectBroadcast={(broadcast) => this.showBroadcast(broadcast)}
-                       horizontal={true} />
+        <View style={{marginBottom: 15, width: '100%', alignItems: 'center'}}>
+          <Text>ChannelList Horizontal Mode</Text>
+          <View style={{height: 150, width: '100%', borderWidth: 1, borderColor: '#ff0000'}}>
+            <ChannelList channelId={MY_BOXCAST_CHANNEL_1_ID}
+                        query={'timeframe:relevant timeframe:next'}
+                        sort={'-starts_at'}
+                        pageSize={10}
+                        onSelectBroadcast={(broadcast) => this.showBroadcast(broadcast)}
+                        horizontal={true} />
+          </View>
         </View>
 
-        <Text style={styles.welcome}>Veritical Channel:</Text>
-        <View style={{height: 300, width: '75%', borderWidth: 1, borderColor: '#ff0000'}}>
-          <ChannelList channelId={MY_BOXCAST_CHANNEL_2_ID}
-                       query={'timeframe:relevant timeframe:next'}
-                       sort={'-starts_at'}
-                       pageSize={10}
-                       onSelectBroadcast={(broadcast) => this.showBroadcast(broadcast)}
-                       horizontal={false} />
+        <View style={{marginBottom: 15, width: '100%', alignItems: 'center'}}>
+          <Text>ChannelList Vertical Mode</Text>
+          <View style={{height: 300, width: '75%', borderWidth: 1, borderColor: '#ff0000'}}>
+            <ChannelList channelId={MY_BOXCAST_CHANNEL_2_ID}
+                        query={'timeframe:relevant timeframe:next'}
+                        sort={'-starts_at'}
+                        pageSize={10}
+                        onSelectBroadcast={(broadcast) => this.showBroadcast(broadcast)}
+                        horizontal={false} />
+          </View>
+        </View>
+
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Switch onValueChange={(dockable) => this.setState({dockable})} value={this.state.dockable} />
+          <Text style={{marginLeft: 5}}>Allow video docking?</Text>
         </View>
 
         {this.state.broadcast &&
           <BroadcastModalView
               broadcast={this.state.broadcast}
-              dockable={true}
+              dockable={this.state.dockable}
               onDismiss={() => { console.log('closing'); this.closeBroadcast(); }} />
         }
       </View>
@@ -76,15 +86,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
   },
 });

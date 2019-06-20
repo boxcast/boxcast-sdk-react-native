@@ -25,6 +25,8 @@ import Badge from './Badge';
 YellowBox.ignoreWarnings([
   'Accessing view manager configs',
   'Invalid image url',
+  'source.uri should not be',
+  'Task orphaned',
   'Remote debugger is in a background tab',
 ]);
 analytics.configure({
