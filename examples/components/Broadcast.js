@@ -23,7 +23,9 @@ import Badge from './Badge';
 
 // Static initialization
 YellowBox.ignoreWarnings([
-  'Accessing view manager configs'
+  'Accessing view manager configs',
+  'Invalid image url',
+  'Remote debugger is in a background tab',
 ]);
 analytics.configure({
   browser_name: 'React Native',

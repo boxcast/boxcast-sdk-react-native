@@ -29,7 +29,7 @@ export default class BroadcastPreview extends Component<Props> {
 
     var imageUrl = broadcast.preview;
     if (!imageUrl) {
-      imageUrl = 'https://dashboard.boxcast.com/img/boxcast_logo_dark.png';
+      imageUrl = 'https://www.boxcast.com/hubfs/preview-not-available.png';
     } else if (imageUrl.indexOf('http') != 0) {
       console.warn('Invalid image url: ', broadcast);
     }
