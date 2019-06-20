@@ -54,11 +54,12 @@ export default class App extends Component<Props> {
           <View style={{flex: 1, backgroundColor: '#000000'}}>
           </View>
         </Modal>
-            {this.state.broadcast &&
-              <DraggableBroadcast
-                  broadcast={this.state.broadcast}
-                  onDismiss={() => this.setState({broadcast: null})} />
-            }
+
+        {this.state.broadcast &&
+          <DraggableBroadcast
+              broadcast={this.state.broadcast}
+              onDismiss={() => this.setState({broadcast: null})} />
+        }
       </View>
     );
   }

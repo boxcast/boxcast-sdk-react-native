@@ -40,6 +40,7 @@ export default class DraggableBroadcast extends Component<Props> {
 
   state = {
     docked: false,
+    enableBroadcast: true,
   };
 
   componentWillMount() {
@@ -67,6 +68,21 @@ export default class DraggableBroadcast extends Component<Props> {
     });
   }
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    const prevBroadcastId = (prevProps.broadcast||{}).id;
+    const newBroadcastId = (this.props.broadcast||{}).id;
+    if (!newBroadcastId) {
+      return this.props.onDismiss();
+    }
+    if (!this.state.enableBroadcast) {
+      this.setState({enableBroadcast: true});
+    }
+    if (prevBroadcastId != newBroadcastId) {
+      this._springBackToTop();
+      this.setState({enableBroadcast: false});
+    }
+  }
+
   _handleVerticalPan(gestureState) {
     const verticalMovementThreshold = 100;
     if (gestureState.dy > verticalMovementThreshold) {
@@ -78,11 +94,14 @@ export default class DraggableBroadcast extends Component<Props> {
       this._xAnimation.setValue(0);
       this.setState({docked: true});
     } else {
-      // Spring back to top
-      this._yAnimation.setOffset(0);
-      Animated.timing(this._yAnimation, {toValue: 0, duration: 200}).start();
-      this.setState({docked: false});
+      this._springBackToTop();
     }
+  }
+
+  _springBackToTop() {
+    this._yAnimation.setOffset(0);
+    Animated.timing(this._yAnimation, {toValue: 0, duration: 200}).start();
+    this.setState({docked: false});
   }
 
   _handleHorizontalPan(gestureState) {
@@ -90,10 +109,7 @@ export default class DraggableBroadcast extends Component<Props> {
       // Kill it
       this.props.onDismiss();
     } else {
-      // Spring back to top
-      this._yAnimation.setOffset(0);
-      Animated.timing(this._yAnimation, {toValue: 0, duration: 200}).start();
-      this.setState({docked: false});
+      this._springBackToTop();
     }
   }
 
@@ -101,12 +117,16 @@ export default class DraggableBroadcast extends Component<Props> {
     const { broadcast } = this.props;
     const transforms = this._computeDraggedTransforms();
 
+    const videoStyles = [
+      { width: transforms.width, height: transforms.videoHeight },
+      transforms.video,
+      { backgroundColor: '#000000' },
+    ];
+
     return (
       <View style={styles.fullScreen} pointerEvents="box-none">
-        <Animated.View
-            style={[{ width: transforms.width, height: transforms.videoHeight }, transforms.video]}
-            {...this._panResponder.panHandlers}>
-          <Broadcast {...this.props} />
+        <Animated.View style={videoStyles} {...this._panResponder.panHandlers}>
+          {this.state.enableBroadcast && <Broadcast {...this.props} />}
         </Animated.View>
         <Animated.ScrollView style={[styles.detailsBox, transforms.details]}>
           <View style={styles.padding}>
