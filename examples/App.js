@@ -8,11 +8,7 @@
 
 import React, {Component} from 'react';
 import {StyleSheet, Text, View, Switch, YellowBox} from 'react-native';
-
-//import { ChannelList } from 'boxcast-react-native';
-import ChannelList from './components/ChannelList';
-import BroadcastModalView from './components/BroadcastModalView';
-
+import { ChannelList, BroadcastModalView } from 'boxcast-sdk-react-native';
 
 // TODO: look up your own channel IDs
 const MY_BOXCAST_CHANNEL_ID = 'lbkvcqkzmxyhzwzsbj6w';

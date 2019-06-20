@@ -1,6 +1,7 @@
 *.log
 *.swp
 npm-debug.log
+*.tgz
 
 # Runtime data
 tmp
