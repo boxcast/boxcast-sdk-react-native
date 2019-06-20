@@ -17,8 +17,7 @@ import GestureRecognizer from './components/GestureRecognizer';
 
 
 // TODO: look up your own channel IDs
-const MY_BOXCAST_CHANNEL_1_ID = 'lbkvcqkzmxyhzwzsbj6w';
-const MY_BOXCAST_CHANNEL_2_ID = '0xQfGiFHjz3YBfO3o1jd';
+const MY_BOXCAST_CHANNEL_ID = 'lbkvcqkzmxyhzwzsbj6w';
 
 type Props = {};
 export default class App extends Component<Props> {
@@ -34,7 +33,7 @@ export default class App extends Component<Props> {
         <View style={{marginBottom: 15, width: '100%', alignItems: 'center'}}>
           <Text>ChannelList Horizontal Mode</Text>
           <View style={{height: 150, width: '100%', borderWidth: 1, borderColor: '#ff0000'}}>
-            <ChannelList channelId={MY_BOXCAST_CHANNEL_1_ID}
+            <ChannelList channelId={MY_BOXCAST_CHANNEL_ID}
                         query={'timeframe:relevant timeframe:next'}
                         sort={'-starts_at'}
                         pageSize={10}
@@ -46,7 +45,7 @@ export default class App extends Component<Props> {
         <View style={{marginBottom: 15, width: '100%', alignItems: 'center'}}>
           <Text>ChannelList Vertical Mode</Text>
           <View style={{height: 300, width: '75%', borderWidth: 1, borderColor: '#ff0000'}}>
-            <ChannelList channelId={MY_BOXCAST_CHANNEL_2_ID}
+            <ChannelList channelId={MY_BOXCAST_CHANNEL_ID}
                         query={'timeframe:relevant timeframe:next'}
                         sort={'-starts_at'}
                         pageSize={10}
@@ -64,14 +63,13 @@ export default class App extends Component<Props> {
           <BroadcastModalView
               broadcast={this.state.broadcast}
               dockable={this.state.dockable}
-              onDismiss={() => { console.log('closing'); this.closeBroadcast(); }} />
+              onDismiss={() => this.closeBroadcast()} />
         }
       </View>
     );
   }
 
   showBroadcast(broadcast) {
-    console.log('Showing broadcast: ', broadcast);
     this.setState({broadcast});
   }
 
