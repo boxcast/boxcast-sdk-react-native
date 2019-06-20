@@ -37,13 +37,15 @@ import { ChannelList, BroadcastModalView } from 'boxcast-sdk-react-native';
 
 render() {
   return (
-    <View style={{flex:1, height:150, width:'100%'}}>
-      <ChannelList channelId={MY_BOXCAST_CHANNEL_ID}
-                   query={'timeframe:relevant timeframe:next'}
-                   sort={'-starts_at'}
-                   pageSize={10}
-                   onSelectBroadcast={(broadcast) => this.setState({broadcast})}
-                   horizontal={true} />
+    <View style={{flex:1}}>
+      <View style={{height:150, width:'100%'}}>
+        <ChannelList channelId={MY_BOXCAST_CHANNEL_ID}
+                    query={'timeframe:relevant timeframe:next'}
+                    sort={'-starts_at'}
+                    pageSize={10}
+                    onSelectBroadcast={(broadcast) => this.setState({broadcast})}
+                    horizontal={true} />
+      </View>
       {this.state.broadcast &&
         <BroadcastModalView
             broadcast={this.state.broadcast}
