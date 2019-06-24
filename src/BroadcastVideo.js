@@ -21,6 +21,7 @@ analytics.configure({
 type Props = {
   broadcast: object,
   onDismiss?: () => mixed,
+  debug: boolean,
 };
 
 export default class BroadcastVideo extends Component<Props> {
@@ -31,10 +32,12 @@ export default class BroadcastVideo extends Component<Props> {
   static propTypes = {
     broadcast: PropTypes.object.isRequired,
     onDismiss: PropTypes.func,
+    debug: PropTypes.bool,
   };
 
   static defaultProps = {
     onDismiss: function(){},
+    debug: false,
   };
 
   state = {
@@ -46,15 +49,20 @@ export default class BroadcastVideo extends Component<Props> {
   constructor(props) {
     super(props);
     this.playerRef = React.createRef();
-    this.analytics = analytics.mode('react-native-video').attach({
-      broadcast: this.props.broadcast,
-      channel_id: this.props.broadcast.channel_id,
-      AsyncStorage: AsyncStorage
-    });
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    await this._initAnalytics();
     this._fetchBroadcastAndView();
+  }
+
+  async _initAnalytics() {
+    this.analytics = await analytics.mode('react-native-video').attach({
+      broadcast: this.props.broadcast,
+      channel_id: this.props.broadcast.channel_id,
+      AsyncStorage: AsyncStorage,
+      debug: this.props.debug,
+    });
   }
 
   _fetchBroadcastAndView() {
@@ -75,6 +83,7 @@ export default class BroadcastVideo extends Component<Props> {
   componentDidUpdate(prevProps) {
     // console.log('Updated. Video player player: ', this.playerRef.current);
     if (this.props.broadcast.id != prevProps.broadcast.id) {
+      this._initAnalytics();
       this._fetchBroadcastAndView();
     }
   }

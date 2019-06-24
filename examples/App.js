@@ -7,11 +7,19 @@
  */
 
 import React, {Component} from 'react';
-import {StyleSheet, Text, View, Switch, YellowBox} from 'react-native';
-import { ChannelList, BroadcastModalView } from 'boxcast-sdk-react-native';
+import {Platform, StyleSheet, Text, View, Switch, YellowBox} from 'react-native';
+import {ChannelList, BroadcastModalView, BroadcastVideo} from 'boxcast-sdk-react-native';
 
 // TODO: look up your own channel IDs
 const MY_BOXCAST_CHANNEL_ID = 'lbkvcqkzmxyhzwzsbj6w';
+
+BroadcastVideo.configureAnalytics({
+  host: 'My BoxCast RN App',
+  os: Platform.OS,
+  browser_name: 'React Native',
+  browser_version: '1.0',
+  player_version: 'boxcast-sdk-react-native v1.0'
+});
 
 YellowBox.ignoreWarnings([
   'Accessing view manager configs',
@@ -65,7 +73,9 @@ export default class App extends Component<Props> {
           <BroadcastModalView
               broadcast={this.state.broadcast}
               dockable={this.state.dockable}
-              onDismiss={() => this.closeBroadcast()} />
+              onDismiss={() => this.closeBroadcast()}
+              debug={true}
+          />
         }
       </View>
     );
