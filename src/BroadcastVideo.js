@@ -46,13 +46,11 @@ export default class BroadcastVideo extends Component<Props> {
   constructor(props) {
     super(props);
     this.playerRef = React.createRef();
-
-    // TODO: re-enable analytics
-    /*this.analytics = analytics.mode('react-native-video').attach({
+    this.analytics = analytics.mode('react-native-video').attach({
       broadcast: this.props.broadcast,
       channel_id: this.props.broadcast.channel_id,
       AsyncStorage: AsyncStorage
-    });*/
+    });
   }
 
   componentDidMount() {
@@ -115,10 +113,9 @@ export default class BroadcastVideo extends Component<Props> {
         style={styles.fullScreen}
         controls={true}
         poster={this.props.broadcast.poster || this.props.broadcast.preview}
+        {...this.analytics.generateVideoEventProps()}
       />
     );
-    // TODO: re-enable analytics props on <Video>
-        /* {...this.analytics.generateVideoEventProps()} */
   }
 
   renderPlaceholder() {

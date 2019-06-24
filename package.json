@@ -37,7 +37,7 @@
     "metro-react-native-babel-preset": "^0.54.1"
   },
   "dependencies": {
-    "boxcast-sdk-js": "^1.2.0",
+    "boxcast-sdk-js": "https://github.com/boxcast/boxcast-sdk-js.git#e028b8ca7cdb20909204387a9fa51d10124a33aa",
     "react-native-video": "^4.4.1"
   }
 }
