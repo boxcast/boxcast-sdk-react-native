@@ -17,8 +17,7 @@ All you need to build your own awesome video app to showcase your BoxCast channe
 ## Install
 
 ```
-npm install --save boxcast-react-native
-npm install --save react-native-video
+npm install --save boxcast-sdk-react-native
 react-native link react-native-video
 ```
 
