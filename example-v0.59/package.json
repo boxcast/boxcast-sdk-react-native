@@ -7,7 +7,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "boxcast-sdk-react-native": "file:../boxcast-sdk-react-native-0.1.0.tgz",
+    "boxcast-sdk-react-native": "file:../boxcast-sdk-react-native-0.1.1.tgz",
     "react": "16.8.3",
     "react-native": "0.59.9"
   },

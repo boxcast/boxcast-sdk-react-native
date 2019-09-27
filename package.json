@@ -1,6 +1,6 @@
 {
   "name": "boxcast-sdk-react-native",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "BoxCast components for React Native",
   "main": "index.js",
   "scripts": {
@@ -38,6 +38,6 @@
   },
   "dependencies": {
     "boxcast-sdk-js": "^1.3.3",
-    "react-native-video": "^4.4.1"
+    "react-native-video": "^5.0.2"
   }
 }
