@@ -11,12 +11,16 @@ Internally, playback depends on the React Native `<Video>` component from [react
 ## Features
 
 * Infinite scrolling display of all broadcasts in a channel via `<ChannelList />`
-* Channel scroller can go horizontal or vertical 
+* Channel scroller can go horizontal or vertical
 * Full screen video playback via `<BroadcastModalView />`
 * Drag and dock the video player to continue browsing app while video plays
 * Simple inline video playback with `<BroadcastVideo />`
 
 ## Install
+
+_NOTE: This library depends on the separate react-native-video project, which
+has platform-specific installation requirements.  Please review the installation guide at
+<a href="https://github.com/react-native-community/react-native-video">react-native-community/react-native-video</a>._
 
 ```
 npm install --save boxcast-sdk-react-native
