@@ -24,6 +24,7 @@ has platform-specific installation requirements.  Please review the installation
 
 ```
 npm install --save boxcast-sdk-react-native
+npm install --save react-native-video@5.0.2
 
 ## Then, for React Native v0.59 and below
 # react-native link react-native-video
