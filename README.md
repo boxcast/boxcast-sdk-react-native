@@ -20,8 +20,14 @@ Internally, playback depends on the React Native `<Video>` component from [react
 
 ```
 npm install --save boxcast-sdk-react-native
-react-native link react-native-video
+
+## Then, for React Native v0.59 and below
+# react-native link react-native-video
+
+## ... or for React Native v0.60 and above
+# cd ios && pod install
 ```
+
 
 ## Usage
 
