@@ -1,6 +1,6 @@
 ## CHANGELOG
 
-### v0.2.0 on (unreleased)
+### v0.2.0 on 2019-10-01
 
 * Upgrade to support React Native v0.61
 * Upgrade to react-native-video v5.0
