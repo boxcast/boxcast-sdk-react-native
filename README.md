@@ -6,7 +6,7 @@ Internally, playback depends on the React Native `<Video>` component from [react
 
 ## Preview
 
-<img src="https://github.com/boxcast/boxcast-sdk-react-native/blob/master/examples/boxcast-sdk-react-native-demo-1.gif?raw=true">
+<img src="https://github.com/boxcast/boxcast-sdk-react-native/blob/master/boxcast-sdk-react-native-demo-1.gif?raw=true">
 
 ## Features
 
