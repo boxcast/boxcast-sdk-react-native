@@ -1,6 +1,7 @@
 *.log
 *.swp
 npm-debug.log
+*.tgz
 
 # Dependency directory
 node_modules
