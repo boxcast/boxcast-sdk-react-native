@@ -41,7 +41,7 @@ export default class ChannelList extends Component<Props> {
   state = {
     broadcasts: [],
     error: null,
-    page: 1,
+    page: 0,
     loading: true,
     refreshing: false,
     loadingMore: false,
@@ -110,7 +110,7 @@ export default class ChannelList extends Component<Props> {
 
   _handleRefresh() {
     this.setState(
-      {broadcasts: [], page: 1, refreshing: true, hasMorePages: true},
+      {broadcasts: [], page: 0, refreshing: true, hasMorePages: true},
       () => this._fetch()
     );
   }
