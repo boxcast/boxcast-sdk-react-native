@@ -64,6 +64,7 @@ export default class ChannelList extends Component<Props> {
               this.setState({width, height})
             }}>
         {error ? <Text style={styles.error}>{error}</Text> : null}
+        {loading && !refreshing && this.props.loader}
         <FlatList style={{width: '100%'}}
                   contentContainerStyle={{
                   }}
