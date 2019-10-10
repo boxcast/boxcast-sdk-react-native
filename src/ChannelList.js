@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Text,
   View,
+  RefreshControl,
 } from 'react-native';
 import { api } from 'boxcast-sdk-js';
 import BroadcastPreview from './BroadcastPreview';
@@ -74,8 +75,13 @@ export default class ChannelList extends Component<Props> {
                   onEndReachedThreshold={0.5}
                   initialNumToRender={this.props.pageSize}
                   ListFooterComponent={() => this._renderFooter()}
-                  refreshing={refreshing}
-                  onRefresh={() => this._handleRefresh()}
+                  refreshControl={
+                    <RefreshControl
+                      refreshing={refreshing}
+                      onRefresh={() => this._handleRefresh()}
+                      {...this.props.refreshControlProps}
+                    />
+                  }
             />
       </View>
     );
@@ -100,12 +106,17 @@ export default class ChannelList extends Component<Props> {
   }
 
   _renderFooter() {
-    if (!this.state.loadingMore) return null;
-    return (
-      <View style={styles.footerLoading}>
-        <ActivityIndicator animating size="large" />
-      </View>
-    );
+    if (!this.state.loadingMore) {
+      return null;
+    } else if (this.props.renderFooter) {
+      return this.props.renderFooter();
+    } else {
+      return (
+        <View style={styles.footerLoading}>
+          <ActivityIndicator animating size="large" />
+        </View>
+      );
+    }
   }
 
   _handleRefresh() {
