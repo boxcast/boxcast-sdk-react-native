@@ -41,11 +41,13 @@ export default class BroadcastModalView extends Component<Props> {
     dragAcceleration: 1.5,
   };
 
-  state = {
-    docked: false,
-  };
+  constructor(props) {
+    super(props);
 
-  componentWillMount() {
+    this.state = {
+      docked: false,
+    };
+
     this._initPanResponder();
   }
 
