@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Text,
   View,
+  RefreshControl,
 } from 'react-native';
 import { api } from 'boxcast-sdk-js';
 import BroadcastPreview from './BroadcastPreview';
@@ -41,7 +42,7 @@ export default class ChannelList extends Component<Props> {
   state = {
     broadcasts: [],
     error: null,
-    page: 1,
+    page: 0,
     loading: true,
     refreshing: false,
     loadingMore: false,
@@ -63,19 +64,25 @@ export default class ChannelList extends Component<Props> {
               this.setState({width, height})
             }}>
         {error ? <Text style={styles.error}>{error}</Text> : null}
+        {loading && !refreshing && this.props.loader}
         <FlatList style={{width: '100%'}}
                   contentContainerStyle={{
                   }}
                   data={broadcasts}
                   horizontal={this.props.horizontal}
-                  renderItem={({item}) => this.renderBroadcast(item)}
+                  renderItem={this.props.renderItem ? this.props.renderItem : ({item}) => this.renderBroadcast(item)}
                   keyExtractor={(item, index) => item.id}
                   onEndReached={() => this._handleLoadMore()}
                   onEndReachedThreshold={0.5}
                   initialNumToRender={this.props.pageSize}
                   ListFooterComponent={() => this._renderFooter()}
-                  refreshing={refreshing}
-                  onRefresh={() => this._handleRefresh()}
+                  refreshControl={
+                    <RefreshControl
+                      refreshing={refreshing}
+                      onRefresh={() => this._handleRefresh()}
+                      {...this.props.refreshControlProps}
+                    />
+                  }
             />
       </View>
     );
@@ -100,17 +107,22 @@ export default class ChannelList extends Component<Props> {
   }
 
   _renderFooter() {
-    if (!this.state.loadingMore) return null;
-    return (
-      <View style={styles.footerLoading}>
-        <ActivityIndicator animating size="large" />
-      </View>
-    );
+    if (!this.state.loadingMore) {
+      return null;
+    } else if (this.props.renderFooter) {
+      return this.props.renderFooter();
+    } else {
+      return (
+        <View style={styles.footerLoading}>
+          <ActivityIndicator animating size="large" />
+        </View>
+      );
+    }
   }
 
   _handleRefresh() {
     this.setState(
-      {broadcasts: [], page: 1, refreshing: true, hasMorePages: true},
+      {broadcasts: [], page: 0, refreshing: true, hasMorePages: true},
       () => this._fetch()
     );
   }

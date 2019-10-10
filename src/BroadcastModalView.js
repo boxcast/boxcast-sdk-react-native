@@ -41,11 +41,13 @@ export default class BroadcastModalView extends Component<Props> {
     dragAcceleration: 1.5,
   };
 
-  state = {
-    docked: false,
-  };
+  constructor(props) {
+    super(props);
 
-  componentWillMount() {
+    this.state = {
+      docked: false,
+    };
+
     this._initPanResponder();
   }
 
@@ -117,6 +119,22 @@ export default class BroadcastModalView extends Component<Props> {
     }
   }
 
+  renderDefaultView() {
+    return (
+      <View style={this.props.styles.fullScreen} pointerEvents="box-none">
+        <Animated.View style={this.props.videoStyles} {...this.props.animationProps}>
+          {<BroadcastVideo {...this.props} />}
+        </Animated.View>
+        <Animated.ScrollView style={[styles.detailsBox, this.props.transforms.details]}>
+          <BroadcastDetails {...this.props} />
+          <TouchableOpacity
+            style={[styles.dismissButton, this.props.dismissStyle]}
+            onPress={() => this.props.onDismiss()}><Text>{this.props.dismissText}</Text></TouchableOpacity>
+        </Animated.ScrollView>
+      </View>
+    );
+  }
+
   render() {
     const animationProps = this._panResponder.panHandlers;
     const transforms = this._computeDraggedTransforms();
@@ -126,18 +144,12 @@ export default class BroadcastModalView extends Component<Props> {
       { backgroundColor: '#000000' },
     ];
 
+    const videoProps = {...this.props, ...animationProps, transforms, videoStyles, styles};
+
     return (
-      <View style={styles.fullScreen} pointerEvents="box-none">
-        <Animated.View style={videoStyles} {...animationProps}>
-          {<BroadcastVideo {...this.props} />}
-        </Animated.View>
-        <Animated.ScrollView style={[styles.detailsBox, transforms.details]}>
-          <BroadcastDetails {...this.props} />
-          <TouchableOpacity
-            style={[styles.dismissButton, this.props.dismissStyle]}
-            onPress={() => this.props.onDismiss()}><Text>{this.props.dismissText}</Text></TouchableOpacity>
-        </Animated.ScrollView>
-      </View>
+      this.props.renderView
+        ? this.props.renderView(videoProps)
+        : this.renderDefaultView()
     );
   }
 

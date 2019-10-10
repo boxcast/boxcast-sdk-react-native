@@ -1,6 +1,6 @@
 {
   "name": "boxcast-sdk-react-native",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "BoxCast components for React Native",
   "main": "index.js",
   "scripts": {
