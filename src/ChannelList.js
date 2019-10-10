@@ -68,7 +68,7 @@ export default class ChannelList extends Component<Props> {
                   }}
                   data={broadcasts}
                   horizontal={this.props.horizontal}
-                  renderItem={({item}) => this.renderBroadcast(item)}
+                  renderItem={this.props.renderItem ? this.props.renderItem : ({item}) => this.renderBroadcast(item)}
                   keyExtractor={(item, index) => item.id}
                   onEndReached={() => this._handleLoadMore()}
                   onEndReachedThreshold={0.5}
