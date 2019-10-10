@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.2.1 on 2019-10-10
+
+* Adding Render Props & Bug Fixes #2
+
 ### v0.2.0 on 2019-10-01
 
 * Upgrade to support React Native v0.61
