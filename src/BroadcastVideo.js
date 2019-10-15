@@ -49,6 +49,7 @@ export default class BroadcastVideo extends Component<Props> {
   constructor(props) {
     super(props);
     this.playerRef = React.createRef();
+    this.renderPlaceholder = this.renderPlaceholder.bind(this);
   }
 
   async componentDidMount() {
@@ -106,10 +107,11 @@ export default class BroadcastVideo extends Component<Props> {
 
   render() {
     const { view, error } = this.state;
+    const renderPlaceholder = this.props.renderPlaceholder ? this.props.renderPlaceholder : this.renderPlaceholder;
 
     return (
       <View style={styles.fullScreen}>
-        {view.playlist ? this.renderVideo(view.playlist) : this.renderPlaceholder()}
+        {view.playlist ? this.renderVideo(view.playlist) : renderPlaceholder({...this.state, ...this.props})}
       </View>
     );
   }
@@ -127,9 +129,9 @@ export default class BroadcastVideo extends Component<Props> {
     );
   }
 
-  renderPlaceholder() {
-    const { view, error, loading } = this.state;
-    const { timeframe, starts_at } = this.props.broadcast;
+  renderPlaceholder(props) {
+    const { error, loading, broadcast } = props;
+    const { timeframe, starts_at } = broadcast;
     
     if (loading) {
       return (
