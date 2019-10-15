@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.2.2 on 2019-10-15
+
+* Added support for renderPlaceholder prop on BroadcastVideo #3
+
 ### v0.2.1 on 2019-10-10
 
 * Adding Render Props & Bug Fixes #2
