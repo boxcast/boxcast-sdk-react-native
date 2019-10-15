@@ -2,6 +2,7 @@
 *.swp
 npm-debug.log
 *.tgz
+*.gif
 
 # Dependency directory
 node_modules
