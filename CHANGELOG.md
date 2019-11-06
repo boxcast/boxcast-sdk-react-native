@@ -1,5 +1,9 @@
 ## CHANGELOG
 
+### v0.2.3 on 2019-11-06
+
+* Updated boxcast-sdk-js to improve analytics
+
 ### v0.2.2 on 2019-10-15
 
 * Added support for renderPlaceholder prop on BroadcastVideo #3
