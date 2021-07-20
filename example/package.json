@@ -12,7 +12,7 @@
   "dependencies": {
     "boxcast-sdk-react-native": "file:../boxcast-sdk-react-native-0.2.0.tgz",
     "react": "16.9.0",
-    "react-native": "0.61.1",
+    "react-native": "0.62.3",
     "react-native-video": "^5.0.2"
   },
   "devDependencies": {
