@@ -11,9 +11,9 @@
   },
   "dependencies": {
     "boxcast-sdk-react-native": "file:../boxcast-sdk-react-native-0.2.0.tgz",
-    "react": "16.9.0",
-    "react-native": "0.61.1",
-    "react-native-video": "^5.0.2"
+    "react": "18.2.0",
+    "react-native": "0.68.2",
+    "react-native-video": "^5.2.0"
   },
   "devDependencies": {
     "@babel/core": "7.6.2",

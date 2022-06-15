@@ -8,8 +8,8 @@
   },
   "dependencies": {
     "boxcast-sdk-react-native": "file:../boxcast-sdk-react-native-0.1.1.tgz",
-    "react": "16.8.3",
-    "react-native": "0.59.9"
+    "react": "18.2.0",
+    "react-native": "0.68.2"
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",
