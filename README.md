@@ -1,5 +1,7 @@
 # BoxCast SDK for React Native
 
+**This repository is no longer being maintained or supported. Please use at your own risk.**
+
 All you need to build your own awesome video app to showcase your BoxCast channels and broadcasts.
 
 Internally, playback depends on the React Native `<Video>` component from [react-native-video](https://github.com/react-native-community/react-native-video).
